@@ -4,19 +4,7 @@ import time
 import sys
 from threading import Timer
 
-# print("Code Execution Started")
 
-
-# def display():
-#     print("Welcome to Guru99 Tutorials")
-
-
-# t = Timer(5)
-# t.start()
-
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
@@ -57,10 +45,12 @@ class MainWindow(QWidget):
             "Драг-рейсинг",
             self,
         )
+        self.header_label.setFont(QFont("Arial", 18))
         self.header_label.setWordWrap(True)
-        self.header_label.move(300, 20)
+        self.header_label.move(565, 20)
+        self.header_label.resize(200, 100)
         self.button = QPushButton("почати гру ", self)
-        self.button.move(300, 70)
+        self.button.move(600, 100)
         self.button.clicked.connect(self.buttonClicked)
         self.resize(600, 600)
         car1 = QPixmap(IMG_CAR1)
@@ -78,6 +68,10 @@ class MainWindow(QWidget):
         self.labelImage1.move(self.place, 160)
         self.labelImage2.move(self.place, 220)
         self.labelImage3.move(self.place, 320)
+        self.speed = random.randrange(1000, 9000)
+        self.speed2 = random.randrange(1000, 9000)
+        self.speed3 = random.randrange(1000, 9000)
+        self.cars = [self.speed, self.speed2, self.speed3]
 
     def buttonClicked(self):
 
@@ -85,70 +79,80 @@ class MainWindow(QWidget):
         if self.times_pressed == 1:
             self.button.setGeometry(60, 160, 150, 30)
             self.button.move(2700, 2050)
-            self.button.setText("тисни щоьб йихати")
+            self.button.setText("тисни щоб їхати")
             self.header_label.setText("")
-            self.car1(
-                speed=random.randrange(1000, 9000),
-                speed2=random.randrange(1000, 9000),
-                speed3=random.randrange(1000, 9000),
-            )
+            self.car1()
 
-            # self.self.cars =
-
-        # if self.times_pressed > 1:
-        #     pass
-
-    def car1(self, speed, speed2, speed3):
+    def car1(self):
+        stop = max(self.cars)
         self.labelImage1.resize(100, 100)
         self.anim1 = QPropertyAnimation(self.labelImage1, b"pos")
         self.anim1.setEndValue(QPoint(1105, 160))
-        self.anim1.setDuration(speed)
+        self.anim1.setDuration(self.speed)
+        if stop == self.speed:
+            self.anim1.finished.connect(self.car_resing_finished)
         self.anim1.start()
 
         self.labelImage2.resize(100, 100)
         self.anim2 = QPropertyAnimation(self.labelImage2, b"pos")
         self.anim2.setEndValue(QPoint(1105, 220))
-        self.anim2.setDuration(speed2)
+        self.anim2.setDuration(self.speed2)
+        if stop == self.speed2:
+            self.anim2.finished.connect(self.car_resing_finished)
         self.anim2.start()
 
         self.labelImage3.resize(100, 100)
         self.anim3 = QPropertyAnimation(self.labelImage3, b"pos")
         self.anim3.setEndValue(QPoint(1105, 320))
-        self.anim3.setDuration(speed3)
-        self.thread.finished.connect(
-            self.car_resing_finished(speed=speed, speed2=speed2, speed3=speed3)
-        )
+        self.anim3.setDuration(self.speed3)
+        if stop == self.speed3:
+            self.anim3.finished.connect(self.car_resing_finished)
         self.anim3.start()
 
-    def car_resing_finished(self, speed, speed2, speed3):
-        self.cars = [speed, speed2, speed3]
-        if min(self.cars) == speed:
-            print("car1")
-            self.cars.remove(speed)
-            if min(self.cars) == speed2:
-                print("car2")
-                print("car3")
+    def car_resing_finished(self):
+        self.header_label.setFont(QFont("Arial", 20))
+        if min(self.cars) == self.speed:
+            self.cars.remove(self.speed)
+            if min(self.cars) == self.speed2:
+                self.header_label.setText(
+                    "car 1\
+                        car 2\
+                    car 3"
+                )
             else:
-                print("car3")
-                print("car2")
-        elif min(self.cars) == speed2:
-            print("car2")
-            self.cars.remove(speed2)
-            if min(self.cars) == speed:
-                print("car1")
-                print("car3")
+                self.header_label.setText(
+                    "car 1\
+                    car 3\
+                        car 2"
+                )
+        elif min(self.cars) == self.speed2:
+            self.cars.remove(self.speed2)
+            if min(self.cars) == self.speed:
+                self.header_label.setText(
+                    "car 2\
+                    car 1\
+                        car 3"
+                )
             else:
-                print("car3")
-                print("car1")
+                self.header_label.setText(
+                    "car 2\
+                    car 3\
+                        car 1"
+                )
         else:
-            print("car3")
-            self.cars.remove(speed3)
-            if min(self.cars) == speed2:
-                print("car2")
-                print("car1")
+            self.cars.remove(self.speed3)
+            if min(self.cars) == self.speed2:
+                self.header_label.setText(
+                    "car 3\
+                    car 2\
+                        car 1"
+                )
             else:
-                print("car1")
-                print("car2")
+                self.header_label.setText(
+                    "car 3\
+                    car 1\
+                        car 2"
+                )
 
 
 if __name__ == "__main__":
